@@ -1,27 +1,33 @@
 {
-  "pathwayTitle": "Bienvenue!",
-  "title": "Premiers pas sur Openstack",
-  "description": "Premiers pas sur Openstack",
-  "difficulty": "Beginner",
-  "time": "60mn",
-  "details": {
-    "assets": {
-      "host01": [{"file" : "Exercices_corrigés/","target":"~/"}],
-}
-    "steps": [
-    ],
-    "intro": {
-      "text": "intro.md",
-      "courseData": "environnement.sh"
-    },
-    "finish": {
-      "text": "finish.md"
-    }
-  },
-  "environment": {
-    "uilayout": "editor-terminal"
-  },
-  "backend": {
-    "imageid": "ubuntu"
-  }
+   "pathwayTitle":"Bienvenue!",
+   "title":"Premiers pas sur Openstack",
+   "description":"Premiers pas sur Openstack",
+   "difficulty":"Beginner",
+   "time":"60mn",
+   "details":{
+      "assets":{
+         "host01":[
+            {
+               "file":"Exercices_corrigés/",
+               "target":"~/"
+            }
+         ]
+      },
+      "steps":[
+
+      ],
+      "intro":{
+         "text":"intro.md",
+         "courseData":"environnement.sh"
+      },
+      "finish":{
+         "text":"finish.md"
+      }
+   },
+   "environment":{
+      "uilayout":"editor-terminal"
+   },
+   "backend":{
+      "imageid":"ubuntu"
+   }
 }
