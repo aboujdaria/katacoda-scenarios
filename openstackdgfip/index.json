@@ -5,6 +5,9 @@
   "difficulty": "Beginner",
   "time": "60mn",
   "details": {
+    "assets": {
+      "host01": [{"file" : "Exercices_corrigés/","target":"~/"}],
+}
     "steps": [
     ],
     "intro": {

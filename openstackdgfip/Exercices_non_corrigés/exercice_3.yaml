@@ -1,0 +1,160 @@
+heat_template_version: 2018-03-02
+
+# Déclaration des paramètres
+parameters:
+
+######################################################################## EXERCICE 1: NETWORKS & SUBNETS
+  cidr_ip_admin: 
+    description: Plage d'adresse IP autorisées pour le réseau d'admin
+    type: string
+    default: 10.0.0.0/24
+  administration_network:
+    description : Réseau accessible de l'extérieur. 
+    type: string
+    default: public
+  dns_nameservers_ip_1:
+    description : IP du serveur DNS principal (serveur public). 
+    type: string
+    default: 8.8.8.8
+  dns_nameservers_ip_2: 
+    description: IP du serveur DNS secondaire (serveur public). 
+    type: string
+    default: 1.1.1.1
+  allocation_pool_start:
+    description: Début de la plage d'adresse IP autorisée pour le sous-réseau
+    type: string
+    default: 10.0.0.2
+  allocation_pool_end:
+    description: Fin de la plage d'adresse IP autorisée pour le sous-réseau
+    type: string
+    default: 10.0.0.250
+
+
+# ---------------- EXERCICE 2: SECURITY GROUPS ---------------
+  bastion_ipaddress_admin:
+    description : Adresse IP interne de la VM Bastion
+    type: string
+    default: 10.0.0.3
+
+# ---------------- EXERCICE 3: BASTION ---------------
+  default_image:
+    description: Image utilisée par la VM Bastion (NUBO possède son propre catalogue d'images)
+    type: string
+    default: CentOS 7.6.1810
+  flavor:
+    description: Gabarit de la VM Bastion (NUBO possède son propre catalogue de gabarits)
+    type: string
+    default: t2.micro
+  vm_availability_zone:
+    description: Zones de disponibilité pour les instances (sur NUBO, choix entre AZ1 et AZ2)
+    type: string
+    default: ams-a
+  keypair_bastion:
+    description: Paire de clés SSH pour se connecter à la VM Bastion
+    type: string
+    default: bastionssh
+  
+
+
+resources:
+
+# ---------------- EXERCICE 1: NETWORKS & SUBNETS ---------------
+
+# Réseau ADMIN
+  network_admin:
+    description: Réseau d'administration
+    type: OS::Neutron::Net
+    properties:
+      name: network_admin
+
+  subnet_network_admin:
+    description: Sous-réseau d'administration
+    type: OS::Neutron::Subnet
+    properties:
+      network: { get_resource: network_admin }
+      name: subnet_network_admin
+      ip_version: 4
+      cidr: { get_param: cidr_ip_admin}
+      allocation_pools: [{start: {get_param: allocation_pool_start}, end: {get_param: allocation_pool_end}}]
+      enable_dhcp: true
+      dns_nameservers: [{ get_param: dns_nameservers_ip_1}, { get_param: dns_nameservers_ip_2}]
+
+  router_admin_FIP_ADMIN:
+    description : Routeur permettant de créer le réseau d'administration 
+    type: OS::Neutron::Router
+    properties:
+      name: router_admin_FIP_ADMIN
+      external_gateway_info: {network: { get_param: administration_network} }
+
+  router_admin_FIP_ADMIN_interface:
+    description: Interface permettant de lier le réseau d'administration et le sous-réseau
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router_admin_FIP_ADMIN }
+      subnet_id: { get_resource: subnet_network_admin }
+
+
+# ---------------- EXERCICE 2: SECURITY GROUPS ---------------
+
+# Groupe de sécurité Bastion
+  sg_bastion:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      description: Groupe de sécurité pour la VM Bastion (SSH)
+      name: sg_bastion
+      rules:
+        - {direction: ingress, ethertype: IPv4, port_range_min: 22, port_range_max: 22, protocol: tcp, remote_ip_prefix: 0.0.0.0/0} 
+        - {direction: ingress, ethertype: IPv4,  protocol: icmp, remote_ip_prefix:  0.0.0.0/0}
+
+# Groupe de sécurité Web
+  sg_web:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      description: Groupe de sécurité pour les VM internes (HTTP/HTTPS)
+      name: sg_web
+      rules:
+        - {direction: ingress, ethertype: IPv4, port_range_min: 80, port_range_max: 80, protocol: tcp, remote_ip_prefix: 0.0.0.0/0} 
+        - {direction: ingress, ethertype: IPv4, port_range_min: 443, port_range_max: 443, protocol: tcp, remote_ip_prefix: 0.0.0.0/0} 
+        - {direction: ingress, ethertype: IPv4,  protocol: icmp, remote_ip_prefix:  0.0.0.0/0}
+
+
+# ---------------- EXERCICE 3: BASTION ---------------
+
+  bastion_fip_admin:
+    description: Génération d'une Floating IP pour accéder à la VM Bastion depuis un poste distant
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: 
+
+  port_bastion_network_admin:
+    description: Port permettant d'attribuer une IP interne à la VM Bastion
+    type: OS::Neutron::Port
+    properties:
+      name: 
+      network: 
+      fixed_ips: [{subnet: , ip_address: }]
+      security_groups: []
+
+  bastion:
+    description: Création d'une VM Bastion avec un gabarit, une image, une paire de clé et une adresse ip interne
+    type: OS::Nova::Server
+    properties:
+      name: 
+      flavor: 
+      availability_zone: 
+      block_device_mapping_v2: [{device_name: , image:  , volume_size: 12, delete_on_termination: true}]
+      key_name: 
+      networks: 
+        - {port:  ,} 
+
+  assoc_floatip_bastion:
+    description: Attribution de la Floating IP générée à la VM Bastion
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: {get_resource: }
+      port_id: { get_resource:  }
+
+outputs:
+  floating_ip:
+    description : Adresse IP du bastion pour accès SSH
+    value: {get_attr: [bastion_fip_admin, floating_ip_address]}
