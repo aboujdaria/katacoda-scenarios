@@ -8,7 +8,7 @@
       "assets":{
          "host01":[
             {
-               "file":"Exercices_corrigés/",
+               "file":"*",
                "target":"~/"
             }
          ]
