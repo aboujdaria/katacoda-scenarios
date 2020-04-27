@@ -10,7 +10,7 @@
             {
                "file":"*",
                "target":"~/",
-               "chmod": "+wrx",
+               "chmod":"+wrx"
             }
          ]
       },
