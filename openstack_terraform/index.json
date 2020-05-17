@@ -3,7 +3,16 @@
   "description": "",
   "difficulty": "Beginner",
   "time": "60",
-  "details": {
+  "details":{
+      "assets":{
+         "host01":[
+            {
+               "file":"*",
+               "target":"~/",
+               "chmod":"+wrx"
+            }
+         ]
+}
     "steps": [],
     "intro": {
       "text": "intro.md"
