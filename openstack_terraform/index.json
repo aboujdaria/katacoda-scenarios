@@ -12,7 +12,7 @@
                "chmod":"+wrx"
             }
          ]
-}
+},
     "steps": [],
     "intro": {
       "text": "intro.md"
