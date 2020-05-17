@@ -12,10 +12,11 @@
                "chmod":"+wrx"
             }
          ]
-},
+        },
     "steps": [],
     "intro": {
-      "text": "intro.md"
+      "text": "intro.md",
+      "courseData": "environment.sh",
     },
     "finish": {
       "text": "finish.md"
