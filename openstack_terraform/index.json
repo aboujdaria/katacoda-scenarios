@@ -16,7 +16,7 @@
     "steps": [],
     "intro": {
       "text": "intro.md",
-      "courseData": "environment.sh",
+      "courseData": "environment.sh"
     },
     "finish": {
       "text": "finish.md"
