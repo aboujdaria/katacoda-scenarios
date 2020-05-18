@@ -5,7 +5,7 @@ resource "openstack_compute_keypair_v2" "bastionssh" {
 resource "openstack_blockstorage_volume_v2" "bastion_volume" {
   region      = ""
   name        = ""
-  description = "system volume for bastion"
+  description = "Volume pour le bastion"
   size        = 20
   image_id    = 
 }

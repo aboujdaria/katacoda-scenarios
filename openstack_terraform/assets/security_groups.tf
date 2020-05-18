@@ -1,6 +1,6 @@
 resource "openstack_networking_secgroup_v2" "sg_bastion" {
   name        = ""
-  description = "Groupe de sécurité pour la VM Bastion (SSH)"
+  description = "Groupe de sécurité pour la VM Bastion"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "bastion_ssh_22" {
@@ -37,7 +37,7 @@ resource "openstack_networking_secgroup_rule_v2" "web_http_80" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "web_http_443" {
-  direction         = "ingrss"
+  direction         = ""
   ethertype         = ""
   protocol          = ""
   port_range_min    = 
